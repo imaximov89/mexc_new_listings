@@ -11,7 +11,6 @@ def new_listings_scrapper():
         base_url = "https://www.mexc.com"
         url = "https://www.mexc.com/support/sections/15425930840734"
         last_announcement_text = ""
-        current_year = datetime.now().year
 
         service = Service()
         options = webdriver.ChromeOptions()
