@@ -3,6 +3,7 @@ from send_telegram_notification import *
 from time import sleep
 
 def main():
+    sleep_period = 600
     last_announcement_cache = ""
     print("Starting the script.")
     while(True):
@@ -11,7 +12,7 @@ def main():
             if last_announcement_cache != last_announcement:
                 last_announcement_cache  = last_announcement
                 send_telegram_notification(last_announcement)
-        sleep(30)
+        sleep(sleep_period)
 
 if __name__ == '__main__':
     main()

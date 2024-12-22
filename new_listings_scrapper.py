@@ -3,7 +3,6 @@ from selenium.webdriver.chrome.service import Service
 from datetime import datetime
 from send_telegram_notification import *
 from bs4 import BeautifulSoup
-from re import search
 from requests import get
 
 def new_listings_scrapper():
@@ -12,7 +11,8 @@ def new_listings_scrapper():
         url = "https://www.mexc.com/support/sections/15425930840734"
         last_announcement_text = ""
 
-        service = Service()
+        service = Service(executable_path='/usr/bin/chromedriver')
+        service.start()
         options = webdriver.ChromeOptions()
         options.add_argument("--headless")
         options.add_argument("--no-sandbox")
@@ -20,6 +20,7 @@ def new_listings_scrapper():
         options.add_argument("--disable-dev-shm-usage")
         driver = webdriver.Chrome(service=service, options=options)
         driver.get(url)
+
         if driver.page_source:
             last_announcement_date = datetime(2001, 1, 1)
             announcements_soup = BeautifulSoup(driver.page_source, 'html.parser')
@@ -40,8 +41,9 @@ def new_listings_scrapper():
                                         if current_announcement_date > last_announcement_date:
                                             last_announcement_date = current_announcement_date
                                             last_announcement_text = current_announcement_text
-            print(last_announcement_text)
-            driver.close()
+            # print(last_announcement_text)
+        driver.quit()
+        service.stop()
         return last_announcement_text
     except Exception as err:
         scrape_error_message = f"Unable to scrape URL. {err}"
