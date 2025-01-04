@@ -1,24 +1,14 @@
-from selenium import webdriver
-from selenium.webdriver.chrome.service import Service
 from datetime import datetime
 from send_telegram_notification import *
 from bs4 import BeautifulSoup
 from requests import get
 
-def new_listings_scrapper():
+def new_listings_scrapper(driver):
     try:
         base_url = "https://www.mexc.com"
         url = "https://www.mexc.com/support/sections/15425930840734"
         last_announcement_text = ""
 
-        service = Service(executable_path='/usr/bin/chromedriver')
-        service.start()
-        options = webdriver.ChromeOptions()
-        options.add_argument("--headless")
-        options.add_argument("--no-sandbox")
-        options.add_argument("--disable-gpu")
-        options.add_argument("--disable-dev-shm-usage")
-        driver = webdriver.Chrome(service=service, options=options)
         driver.get(url)
 
         if driver.page_source:
@@ -42,8 +32,6 @@ def new_listings_scrapper():
                                             last_announcement_date = current_announcement_date
                                             last_announcement_text = current_announcement_text
             # print(last_announcement_text)
-        driver.quit()
-        service.stop()
         return last_announcement_text
     except Exception as err:
         scrape_error_message = f"Unable to scrape URL. {err}"
