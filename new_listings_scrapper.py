@@ -1,9 +1,8 @@
 from datetime import datetime
-from send_telegram_notification import *
 from bs4 import BeautifulSoup
 from requests import get
 
-def new_listings_scrapper(driver):
+def new_listings_scrapper(driver, text_to_find):
     try:
         base_url = "https://www.mexc.com"
         url = "https://www.mexc.com/support/sections/15425930840734"
@@ -17,7 +16,8 @@ def new_listings_scrapper(driver):
             announcements = announcements_soup.find_all('a')
             for announcement in announcements:
                 current_announcement_text = announcement.get_text()
-                if current_announcement_text.find('Will List') > 0:
+                text_find_result = any([text in current_announcement_text for text in text_to_find])
+                if text_find_result:
                     if announcement.get('href'):
                         announcement_url = ''.join([base_url, announcement.get('href')])
                         if announcement_url:
@@ -32,7 +32,6 @@ def new_listings_scrapper(driver):
                                             last_announcement_date = current_announcement_date
                                             last_announcement_text = current_announcement_text
             # print(last_announcement_text)
-        return last_announcement_text
     except Exception as err:
-        scrape_error_message = f"Unable to scrape URL. {err}"
-        send_telegram_notification(scrape_error_message)
+         last_announcement_text = f"Unable to scrape URL. {err}"
+    return last_announcement_text

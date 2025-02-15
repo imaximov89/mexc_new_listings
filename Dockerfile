@@ -29,7 +29,7 @@ RUN adduser \
     appuser
 
 # Install system tools
-RUN apt update -y && apt install -y wget unzip
+RUN apt update -y && apt upgrade -y && apt install -y wget unzip
 
 # Download dependencies as a separate step to take advantage of Docker's caching.
 # Leverage a cache mount to /root/.cache/pip to speed up subsequent builds.
@@ -40,12 +40,12 @@ RUN --mount=type=cache,target=/root/.cache/pip \
     python -m pip install -r requirements.txt
 
 # Install Google Chrome
-RUN wget -q https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb && \
-    apt install -y ./google-chrome-stable_current_amd64.deb && \
-    rm google-chrome-stable_current_amd64.deb
+RUN wget -q https://dl.google.com/linux/deb/pool/main/g/google-chrome-stable/google-chrome-stable_133.0.6943.98-1_amd64.deb && \
+    apt install -y ./google-chrome-stable_133.0.6943.98-1_amd64.deb && \
+    rm google-chrome-stable_133.0.6943.98-1_amd64.deb
 
 # Install Chromedriver
-RUN wget -q https://storage.googleapis.com/chrome-for-testing-public/131.0.6778.13/linux64/chromedriver-linux64.zip && \
+RUN wget -q https://storage.googleapis.com/chrome-for-testing-public/133.0.6943.98/linux64/chromedriver-linux64.zip && \
     unzip chromedriver-linux64.zip && \
     mv chromedriver-linux64/chromedriver /usr/bin && \
     chmod +x /usr/bin/chromedriver && \

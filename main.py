@@ -5,8 +5,9 @@ from selenium.webdriver.chrome.service import Service
 from selenium import webdriver
 
 def main():
-    sleep_period = 600
+    sleep_period = 300
     last_announcement_cache = ""
+    text_to_find = ("Will List", "Initial Futures Listing", "To List")
     chrome_service = Service(executable_path='/usr/bin/chromedriver')
     chrome_service.start()
     chrome_options = webdriver.ChromeOptions()
@@ -18,12 +19,12 @@ def main():
 
     print("Starting the script.")
     while(True):
-        last_announcement = new_listings_scrapper(driver=chrome_driver)
+        last_announcement = new_listings_scrapper(driver=chrome_driver, text_to_find=text_to_find)
         if last_announcement != "":
             if last_announcement_cache != last_announcement:
                 last_announcement_cache = last_announcement
                 send_telegram_notification(last_announcement)
-                if last_announcement.find('Will List') == -1:
+                if last_announcement.find('Unable to scrape URL') > 0:
                     chrome_driver.close()
                     chrome_driver.quit()
                     chrome_service.stop()
